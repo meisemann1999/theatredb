@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Theatre Employee Dashboard</h1>
+<h2>Equipment Repairs</h2>
+<table class="table table-hover">
+    <thead>
+        <th>Inventory ID</th>
+        <th>Equipment Category</th>
+        <th>Brand</th>
+        <th>Model</th>
+        <th>Repair Info</th>
+    </thead>
+    <tbody>
+        {% for equip in equipment_service %}
+            <tr>
+                <td>{{ equip.inventory_id }}</td>
+                <td>{{ equip.category }}</td>
+                <td>{{ equip.brand }}</td>
+                <td>{{ equip.model }}</td>
+                <td>{{ equip.repair_notes }}</td>
+            </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+{% endblock content %}

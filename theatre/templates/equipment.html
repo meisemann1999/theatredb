@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<table class="table table-hover">
+    <thead>
+        <th>Inventory ID</th>
+        <th>Category</th>
+        <th>Model</th>
+        <th>Condition</th>
+        <th>Repair Info</th>
+        <th>Event</th>
+        <th>Checked Out By</th>
+    </thead>
+    <tbody>
+        {% for equip in equipment_list %}
+        <tr class="{% if equip.condition == 'Great' %}table-success{% elif equip.condition == 'OK' %}table-warning{% elif equip.condition == 'Needs Repair' %}table-danger{% endif %}">
+            <td>{{ equip.inventory_id }}</td>
+            <td>{{ equip.category }}</td>
+            <td>{{ equip.brand }} {{ equip.model }}</td>
+            <td>{{ equip.condition }}</td>
+            <td>{{ equip.repair_notes }}</td>
+            <td>{{ equip.event_id.event_name }} ({{ equip.event_id.start_date }})</td>
+            <td>{{ equip.checked_out_by.fname }} {{ equip.checked_out_by.lname }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}
