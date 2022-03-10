@@ -5,7 +5,8 @@
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
-from django.db import models
+import random
+from django.db import IntegrityError, models
 import phonenumbers
 
 
@@ -21,6 +22,9 @@ class Accounting(models.Model):
         managed = False
         db_table = 'ACCOUNTING'
         app_label = 'theatre'
+    
+    def __str__(self):
+        return self.type + " - " + self.entry_name + " (" + str(self.amount) + ")"
 
 
 class Department(models.Model):
@@ -31,6 +35,9 @@ class Department(models.Model):
         managed = False
         db_table = 'DEPARTMENT'
         app_label = 'theatre'
+    
+    def __str__(self):
+        return self.department_name
 
 
 class Employee(models.Model):
@@ -39,8 +46,8 @@ class Employee(models.Model):
     minit = models.CharField(db_column='MInit', blank=True, null=True, max_length = 1)  # Field name made lowercase.
     lname = models.CharField(db_column='LName', blank=True, null=True, max_length = 30)  # Field name made lowercase.
     ssn = models.CharField(db_column='SSN', unique=True, max_length=9)  # Field name made lowercase.
-    street = models.TextField(db_column='Street', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
-    city = models.TextField(db_column='City', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
+    street = models.CharField(db_column='Street', max_length = 60, blank=True, null=True)  # Field name made lowercase. This field type is a guess.
+    city = models.CharField(db_column='City', max_length = 35, blank=True, null=True)  # Field name made lowercase. This field type is a guess.
     state = models.TextField(db_column='State', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
     zip = models.CharField(db_column='ZIP', blank=True, null=True, max_length = 5)  # Field name made lowercase.
     supervisor_id = models.ForeignKey('self', on_delete=models.SET_NULL, db_column='Supervisor_ID', blank=True, null=True, max_length = 10)  # Field name made lowercase.
@@ -54,6 +61,20 @@ class Employee(models.Model):
         managed = False
         db_table = 'EMPLOYEE'
         app_label = 'theatre'
+    
+    def generate_id(self):
+        id = self.fname[0].lower() + self.lname[0:2].lower() + "_" + str(random.randint(100, 999))
+        return id
+
+    # def save(self, *args, **kwargs):
+    #     self.employeeid = self.generate_id()
+    #     super(Employee, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.fname + " "  + self.lname
+
+
+            
 
     def format_phone(self, country='US'):
         return phonenumbers.format_number(phonenumbers.parse(self.phone, country), phonenumbers.PhoneNumberFormat.NATIONAL) 
@@ -108,3 +129,6 @@ class Role(models.Model):
         managed = False
         db_table = 'ROLE'
         app_label = 'theatre'
+    
+    def __str__(self):
+        return self.role_name
