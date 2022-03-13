@@ -7,6 +7,8 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 import random
 from django.db import IntegrityError, models
+from localflavor.us.models import USStateField, USZipCodeField
+
 import phonenumbers
 
 
@@ -48,8 +50,8 @@ class Employee(models.Model):
     ssn = models.CharField(db_column='SSN', unique=True, max_length=9)  # Field name made lowercase.
     street = models.CharField(db_column='Street', max_length = 60, blank=True, null=True)  # Field name made lowercase. This field type is a guess.
     city = models.CharField(db_column='City', max_length = 35, blank=True, null=True)  # Field name made lowercase. This field type is a guess.
-    state = models.TextField(db_column='State', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
-    zip = models.CharField(db_column='ZIP', blank=True, null=True, max_length = 5)  # Field name made lowercase.
+    state = USStateField(db_column = 'State', null=True, blank=True)  # Field name made lowercase. This field type is a guess.
+    zip = USZipCodeField(db_column='ZIP', blank=True, null=True)  # Field name made lowercase.
     supervisor_id = models.ForeignKey('self', on_delete=models.SET_NULL, db_column='Supervisor_ID', blank=True, null=True, max_length = 10)  # Field name made lowercase.
     earns = models.ForeignKey(Accounting, models.DO_NOTHING, db_column='Earns', blank=True, null=True)  # Field name made lowercase.
     department = models.ForeignKey(Department, models.DO_NOTHING, db_column='Department', blank=True, null=True)  # Field name made lowercase.
@@ -63,8 +65,10 @@ class Employee(models.Model):
         app_label = 'theatre'
     
     def generate_id(self):
-        id = self.fname[0].lower() + self.lname[0:2].lower() + "_" + str(random.randint(100, 999))
-        return id
+        while not self.employeeid:
+            id = self.fname[0].lower() + self.lname[0:2].lower() + "_" + str(random.randint(100, 999))
+            if not Employee.objects.filter(pk=id).exists():
+                return id
 
     # def save(self, *args, **kwargs):
     #     self.employeeid = self.generate_id()
@@ -73,11 +77,13 @@ class Employee(models.Model):
     def __str__(self):
         return self.fname + " "  + self.lname
 
-
-            
-
     def format_phone(self, country='US'):
-        return phonenumbers.format_number(phonenumbers.parse(self.phone, country), phonenumbers.PhoneNumberFormat.NATIONAL) 
+        if self.phone:
+            return phonenumbers.format_number(phonenumbers.parse(self.phone, country), phonenumbers.PhoneNumberFormat.NATIONAL) 
+        else:
+            return None
+    def format_addr(self):
+        return f'{self.street}<br>{self.city}, {self.state} {self.zip}'
 
 
 
@@ -108,6 +114,9 @@ class Event(models.Model):
         managed = False
         db_table = 'EVENT'
         app_label = 'theatre'
+    
+    def __str__(self):
+        return f'{self.event_name} ({self.start_date})'
 
 
 class Login(models.Model):
