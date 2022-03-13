@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+{% block title %} Employees {% endblock %}
 {% block content %}
 <h2>Employees</h2>
 
@@ -15,16 +16,16 @@
         <th>Supervisor</th>
     </thead>
     <tbody>
-        {% for item in employee_dt %}
+        {% for empl in employee_dt %}
         <tr> 
-            <td>{{ item.fname }} {{ item.lname }}</td>
-            <td>{{ item.employeeid }}</td>
-            <td>{{ item.street }}<br>{{ item.city }}, {{ item.state }} {{item.zip }}</td>
-            <td>{{ item.format_phone }}</td>
-            <td>{{ item.email }}</td> 
-            <td>{{ item.department.department_name }}</td>
-            <td>{{ item.role.role_name }}</td>
-            <td>{{ item.supervisor_id.fname }} {{item.supervisor_id.lname}}</td>
+            <td>{{ empl.fname }} {{ empl.lname }}</td>
+            <td>{{ empl.employeeid }}</td>
+            <td>{{ empl.format_addr|safe }}</td>
+            <td>{{ empl.format_phone }}</td>
+            <td>{{ empl.email }}</td> 
+            <td>{{ empl.department }}</td>
+            <td>{{ empl.role.role_name }}</td>
+            <td>{{ empl.supervisor_id.fname }} {{ empl.supervisor_id.lname }}</td>
         </tr>
         {% endfor %}
     </tbody>
