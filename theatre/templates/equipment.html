@@ -19,8 +19,8 @@
             <td>{{ equip.brand }} {{ equip.model }}</td>
             <td>{{ equip.condition }}</td>
             <td>{{ equip.repair_notes }}</td>
-            <td>{{ equip.event_id.event_name }} ({{ equip.event_id.start_date }})</td>
-            <td>{{ equip.checked_out_by.fname }} {{ equip.checked_out_by.lname }}</td>
+            <td>{{ equip.event_id }}</td>
+            <td>{{ equip.checked_out_by }}</td>
         </tr>
         {% endfor %}
     </tbody>
