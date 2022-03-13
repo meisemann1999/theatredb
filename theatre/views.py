@@ -25,7 +25,7 @@ class EmployeeList(generic.ListView):
         return context
 
 class EmployeeDetail(generic.DetailView):
-    model=Employee
+    model = Employee
     template_name = 'employee-detail.html'
 
 class EquipmentList(generic.ListView):
@@ -37,4 +37,8 @@ class EquipmentList(generic.ListView):
         context = super().get_context_data(**kwargs)
         context['nbar'] = 'equipment'
         return context
+
+class EquipmentDetail(generic.DetailView):
+    model = Equipment
+    template_name = 'equipment-detail.html'
 
